@@ -45,7 +45,7 @@ ConfigureServices(s =>
     {
         var login = e.ServiceProvider.GetRequiredService<login>();
 
-        e.MapPost("login",
+        e.MapPost("/login",
             [AllowAnonymous] async (HttpContext http) =>
             {
                 var body = await new StreamReader(http.Request.Body).ReadToEndAsync();
@@ -55,7 +55,7 @@ ConfigureServices(s =>
             });
 
         var register = e.ServiceProvider.GetRequiredService<register>();
-        e.MapPost("registration",
+        e.MapPost("/registration",
         [AllowAnonymous] async (HttpContext http) =>
         {
             var body = await new StreamReader(http.Request.Body).ReadToEndAsync();
@@ -69,7 +69,7 @@ ConfigureServices(s =>
         });
 
         var changePassword = e.ServiceProvider.GetRequiredService<changePassword>();
-        e.MapPost("changePassword", [AllowAnonymous] async (HttpContext http) =>
+        e.MapPost("/changePassword", [AllowAnonymous] async (HttpContext http) =>
         {
             var body = await new StreamReader(http.Request.Body).ReadToEndAsync();
             requestData rData = JsonSerializer.Deserialize<requestData>(body);
@@ -78,7 +78,7 @@ ConfigureServices(s =>
         });
 
         var resetPassword = e.ServiceProvider.GetRequiredService<resetPassword>();
-        e.MapPost("resetPassword", [AllowAnonymous] async (HttpContext http) =>
+        e.MapPost("/resetPassword", [AllowAnonymous] async (HttpContext http) =>
         {
             var body = await new StreamReader(http.Request.Body).ReadToEndAsync();
             requestData rData = JsonSerializer.Deserialize<requestData>(body);
@@ -87,7 +87,7 @@ ConfigureServices(s =>
         });
 
         var editProfile = e.ServiceProvider.GetRequiredService<editProfile>();
-        e.MapPost("editProfile", [AllowAnonymous] async (HttpContext http) =>
+        e.MapPost("/editProfile", [AllowAnonymous] async (HttpContext http) =>
         {
             var body = await new StreamReader(http.Request.Body).ReadToEndAsync();
             requestData rData = JsonSerializer.Deserialize<requestData>(body);
@@ -95,7 +95,7 @@ ConfigureServices(s =>
         });
 
         var deleteProfile = e.ServiceProvider.GetRequiredService<deleteProfile>();
-        e.MapPost("deleteProfile", [AllowAnonymous] async (HttpContext http) =>
+        e.MapPost("/deleteProfile", [AllowAnonymous] async (HttpContext http) =>
         {
             var body = await new StreamReader(http.Request.Body).ReadToEndAsync();
             requestData rData = JsonSerializer.Deserialize<requestData>(body);
@@ -103,11 +103,14 @@ ConfigureServices(s =>
         });
 
         var contactUs = e.ServiceProvider.GetRequiredService<contactUs>();
-        e.MapPost("contactUs", [AllowAnonymous] async (HttpContext http) =>
+        e.MapPost("/contactUs", [AllowAnonymous] async (HttpContext http) =>
         {
             var body = await new StreamReader(http.Request.Body).ReadToEndAsync();
             requestData rData = JsonSerializer.Deserialize<requestData>(body);
-            if (rData.eventID == "1006") await http.Response.WriteAsJsonAsync(await contactUs.ContactUs(rData));
+            if (rData.eventID == "1001") await http.Response.WriteAsJsonAsync(await contactUs.ContactUs(rData));
+            if (rData.eventID == "1002") await http.Response.WriteAsJsonAsync(await contactUs.DeleteContactById(rData));
+            if (rData.eventID == "1003") await http.Response.WriteAsJsonAsync(await contactUs.GetContactById(rData));
+            if (rData.eventID == "1004") await http.Response.WriteAsJsonAsync(await contactUs.GetAllContacts(rData));
         });
 
 
