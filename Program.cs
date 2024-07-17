@@ -10,7 +10,7 @@ ConfigureServices(s =>
 {
     IConfiguration appsettings = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
     s.AddSingleton<login>();
-    s.AddSingleton<Register>();
+    s.AddSingleton<register>();
     s.AddSingleton<changePassword>();
     s.AddSingleton<resetPassword>();
     s.AddSingleton<editProfile>();
@@ -18,9 +18,9 @@ ConfigureServices(s =>
     s.AddSingleton<drones>();
     s.AddSingleton<contactUs>();
 
-    s.AddAuthorization();
-    s.AddControllers();
     s.AddCors();
+    s.AddControllers();
+    s.AddAuthorization();
     s.AddAuthentication("SourceJWT").AddScheme<SourceJwtAuthenticationSchemeOptions, SourceJwtAuthenticationHandler>("SourceJWT", options =>
         {
             options.SecretKey = appsettings["jwt_config:Key"].ToString();
@@ -30,8 +30,8 @@ ConfigureServices(s =>
         });
 }).Configure(app =>
 {
-    app.UseAuthentication();
     app.UseAuthorization();
+    app.UseAuthentication();
 
     app.UseCors(options =>
              options.WithOrigins("https://localhost:5001", "http://localhost:5002")
@@ -53,7 +53,7 @@ ConfigureServices(s =>
                     await http.Response.WriteAsJsonAsync(await login.Login(rData));
             });
 
-        var register = e.ServiceProvider.GetRequiredService<Register>();
+        var register = e.ServiceProvider.GetRequiredService<register>();
         e.MapPost("registration",
         [AllowAnonymous] async (HttpContext http) =>
         {
@@ -111,13 +111,16 @@ ConfigureServices(s =>
 
 
         var drones = e.ServiceProvider.GetRequiredService<drones>();
-        e.MapPost("alldrones", [AllowAnonymous] async (HttpContext http) =>
+        e.MapPost("/drones", [AllowAnonymous] async (HttpContext http) =>
         {
             var body = await new StreamReader(http.Request.Body).ReadToEndAsync();
             requestData rData = JsonSerializer.Deserialize<requestData>(body);
-            if (rData.eventID == "1099") await http.Response.WriteAsJsonAsync(await drones.GetAllDrones(rData));
+            if (rData.eventID == "1001") await http.Response.WriteAsJsonAsync(await drones.AddDrone(rData));
+            if (rData.eventID == "1002") await http.Response.WriteAsJsonAsync(await drones.EditDrone(rData));
+            if (rData.eventID == "1003") await http.Response.WriteAsJsonAsync(await drones.DeleteDrone(rData));
+            if (rData.eventID == "1004") await http.Response.WriteAsJsonAsync(await drones.GetDrone(rData));
+            if (rData.eventID == "1005") await http.Response.WriteAsJsonAsync(await drones.GetAllDrones(rData));
         });
-
 
         e.MapGet("/bing",
           async c => await c.Response.WriteAsJsonAsync("{'Name':'Gourav','Age':'22','Project':'TEDrones'}"));

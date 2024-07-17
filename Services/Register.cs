@@ -7,7 +7,7 @@ using Org.BouncyCastle.Ocsp;
 
 namespace MyCommonStructure.Services
 {
-    public class Register
+    public class register
     {
         dbServices ds = new dbServices();
 

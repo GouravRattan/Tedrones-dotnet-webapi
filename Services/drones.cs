@@ -9,6 +9,209 @@ namespace MyCommonStructure.Services
     public class drones
     {
         dbServices ds = new dbServices();
+
+        public async Task<responseData> AddDrone(requestData rData)
+        {
+            responseData resData = new responseData();
+            resData.rData["rCode"] = 0;
+            try
+            {
+                MySqlParameter[] checkParams = new MySqlParameter[]
+                {
+                    new MySqlParameter("@Name", rData.addInfo["Name"]),
+                };
+
+                var checkQuery = @"SELECT * FROM pc_student.All_Drones WHERE Name = @Name;";
+                var dbCheckData = ds.ExecuteSQLName(checkQuery, checkParams);
+                if (dbCheckData[0].Count() != 0)
+                {
+                    resData.rData["rCode"] = 2;
+                    resData.rData["rMessage"] = "Drone with this Name already exists!";
+                }
+                else
+                {
+                    MySqlParameter[] insertParams = new MySqlParameter[]
+                    {
+                        new MySqlParameter("@Name", rData.addInfo["Name"]),
+                        new MySqlParameter("@Description", rData.addInfo["Description"]),
+                        new MySqlParameter("@Price", rData.addInfo["Price"]),
+                        new MySqlParameter("@ImageUrl", rData.addInfo["ImageUrl"]),
+                        new MySqlParameter("@ImageThumbnailUrl", rData.addInfo["ImageThumbnailUrl"]),
+                    };
+                    var insertQuery = @"INSERT INTO pc_student.All_Drones (Name, Description, Price, ImageUrl, ImageThumbnailUrl) 
+                                        VALUES (@Name, @Description, @Price, @ImageUrl, @ImageThumbnailUrl);";
+                    int rowsAffected = ds.ExecuteInsertAndGetLastId(insertQuery, insertParams);
+
+                    if (rowsAffected > 0)
+                    {
+                        resData.eventID = rData.eventID;
+                        resData.rData["rCode"] = 0;
+                        resData.rData["rMessage"] = "Drone added successfully.";
+                    }
+                    else
+                    {
+                        resData.rData["rCode"] = 3;
+                        resData.rData["rMessage"] = "Failed to add drone!";
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                resData.rStatus = 402;
+                resData.rData["rCode"] = 1;
+                resData.rData["rMessage"] = $"Error: {ex.Message}";
+            }
+            return resData;
+        }
+
+
+        public async Task<responseData> EditDrone(requestData rData)
+        {
+            responseData resData = new responseData();
+            resData.rData["rCode"] = 0;
+            try
+            {
+                MySqlParameter[] checkParams = new MySqlParameter[]
+                {
+                    new MySqlParameter("@DroneId", rData.addInfo["DroneId"]),
+                };
+
+                var query = @"SELECT * FROM pc_student.All_Drones WHERE DroneId=@DroneId";
+                var dbData = ds.ExecuteSQLName(query, checkParams);
+                if (dbData[0].Count() == 0)
+                {
+                    resData.rData["rCode"] = 2;
+                    resData.rData["rMessage"] = "No drone found with the provided Id!";
+                }
+                else
+                {
+                    MySqlParameter[] updateParams = new MySqlParameter[]
+                   {
+                        new MySqlParameter("@DroneId", rData.addInfo["DroneId"]),
+                        new MySqlParameter("@Name", rData.addInfo["Name"]),
+                        new MySqlParameter("@Description", rData.addInfo["Description"]),
+                        new MySqlParameter("@Price", rData.addInfo["Price"]),
+                        new MySqlParameter("@ImageUrl", rData.addInfo["ImageUrl"]),
+                        new MySqlParameter("@ImageThumbnailUrl", rData.addInfo["ImageThumbnailUrl"]),
+                   };
+                    var updatequery = @"UPDATE pc_student.All_Drones
+                                        SET Name = @Name, Description = @Description, Price = @Price, ImageUrl = @ImageUrl, ImageThumbnailUrl = @ImageThumbnailUrl
+                                        WHERE DroneId = @DroneId;";
+                    var updatedata = ds.ExecuteInsertAndGetLastId(updatequery, updateParams);
+                    if (updatedata != 0)
+                    {
+                        resData.rData["rCode"] = 3;
+                        resData.rData["rMessage"] = "Some error occured, couldn't update details!";
+                    }
+                    else
+                    {
+                        resData.eventID = rData.eventID;
+                        resData.rData["rCode"] = 0;
+                        resData.rData["rMessage"] = "Drone details updated successfully.";
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                resData.rStatus = 402;
+                resData.rData["rCode"] = 1;
+                resData.rData["rMessage"] = $"Error: {ex.Message}";
+            }
+            return resData;
+        }
+
+        public async Task<responseData> DeleteDrone(requestData rData)
+        {
+            responseData resData = new responseData();
+            resData.rData["rCode"] = 0;
+            try
+            {
+                MySqlParameter[] para = new MySqlParameter[]
+                {
+                    new MySqlParameter("@DroneId", rData.addInfo["DroneId"].ToString()),
+                    new MySqlParameter("@Name", rData.addInfo["Name"].ToString())
+                };
+
+                var query = @"SELECT * FROM pc_student.All_Drones WHERE DroneId=@DroneId OR Name=@Name;";
+                var dbData = ds.ExecuteSQLName(query, para);
+                if (dbData[0].Count() == 0)
+                {
+                    resData.rData["rCode"] = 2;
+                    resData.rData["rMessage"] = "No Drone found!";
+                }
+                else
+                {
+                    var deleteSql = $"DELETE FROM pc_student.All_Drones WHERE DroneId=@DroneId OR Name = @Name";
+                    var rowsAffected = ds.ExecuteInsertAndGetLastId(deleteSql, para);
+                    if (rowsAffected == 0)
+                    {
+                        resData.eventID = rData.eventID;
+                        resData.rData["rCode"] = 0;
+                        resData.rData["rMessage"] = "Drone deleted successfully.";
+                    }
+                    else
+                    {
+                        resData.rData["rCode"] = 2;
+                        resData.rData["rMessage"] = "Couldn't delete drone!";
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                resData.rStatus = 402;
+                resData.rData["rCode"] = 1;
+                resData.rData["rMessage"] = $"Error: {ex.Message}";
+            }
+            return resData;
+        }
+
+        public async Task<responseData> GetDrone(requestData req)
+        {
+            responseData resData = new responseData();
+            resData.rData["rCode"] = 0;
+            resData.eventID = req.eventID;
+            resData.rData["rMessage"] = "Drone found successfully!";
+            try
+            {
+                string DroneId = req.addInfo["DroneId"].ToString();
+                string Name = req.addInfo["Name"].ToString();
+                string Description = req.addInfo["Description"].ToString();
+
+                MySqlParameter[] myParams = new MySqlParameter[]
+                {
+                    new MySqlParameter("@DroneId", req.addInfo["DroneId"]),
+                    new MySqlParameter("@Name", req.addInfo["Name"]),
+                    new MySqlParameter("@Description", req.addInfo["Description"])
+                };
+
+                string getsql = $"SELECT * FROM pc_student.All_Drones " +
+                             "WHERE DroneId = @DroneId OR Name = @Name OR Description = @Description;";
+                var Dronedata = ds.ExecuteSQLName(getsql, myParams);
+                if (Dronedata == null || Dronedata.Count == 0 || Dronedata[0].Count() == 0)
+                {
+                    resData.rData["rCode"] = 2;
+                    resData.rData["rMessage"] = "Drone not found!";
+                }
+                else
+                {
+                    var DroneData = Dronedata[0][0];
+                    resData.rData["DroneId"] = DroneData["DroneId"];
+                    resData.rData["Name"] = DroneData["Name"];
+                    resData.rData["Description"] = DroneData["Description"];
+                    resData.rData["Price"] = DroneData["Price"];
+                    resData.rData["ImageUrl"] = DroneData["ImageUrl"];
+                    resData.rData["ImageThumbnailUrl"] = DroneData["ImageThumbnailUrl"];
+                }
+            }
+            catch (Exception ex)
+            {
+                resData.rStatus = 402;
+                resData.rData["rCode"] = 1;
+                resData.rData["rMessage"] = ex + "Enter correct Drone or Description name!";
+            }
+            return resData;
+        }
+
         public async Task<responseData> GetAllDrones(requestData req)
         {
             responseData resData = new responseData();
