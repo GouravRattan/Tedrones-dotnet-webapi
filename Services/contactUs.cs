@@ -6,7 +6,6 @@ using Microsoft.IdentityModel.Tokens;
 using MySql.Data.MySqlClient;
 
 namespace MyCommonStructure.Services
-
 {
     public class contactUs
     {
@@ -21,14 +20,14 @@ namespace MyCommonStructure.Services
             {
                 MySqlParameter[] para = new MySqlParameter[]
                 {
-                    new MySqlParameter("@name", req.addInfo["name"].ToString()),
-                    new MySqlParameter("@email", req.addInfo["email"].ToString()),
-                    new MySqlParameter("@phone", req.addInfo["phone"].ToString()),
-                    new MySqlParameter("@interest", req.addInfo["interest"].ToString()),
-                    new MySqlParameter("@message", req.addInfo["message"].ToString()),
+                    new MySqlParameter("@UserName", req.addInfo["UserName"].ToString()),
+                    new MySqlParameter("@Email", req.addInfo["Email"].ToString()),
+                    new MySqlParameter("@Phone", req.addInfo["Phone"].ToString()),
+                    new MySqlParameter("@Topic", req.addInfo["Topic"].ToString()),
+                    new MySqlParameter("@Message", req.addInfo["Message"].ToString()),
                 };
 
-                var checkSql = $"SELECT * FROM pc_student.et_register WHERE Email=@Email;";
+                var checkSql = $"SELECT * FROM pc_student.TEDrones_Users WHERE Email=@Email;";
                 var checkResult = ds.executeSQL(checkSql, para);
 
                 if (checkResult == null || checkResult[0].Count() == 0)
@@ -38,7 +37,7 @@ namespace MyCommonStructure.Services
                 }
                 else
                 {
-                    var insertSql = $"INSERT INTO pc_student.et_feedback (Name, Email, Phone, Interest, Message) VALUES(@name, @email, @phone, @interest, @message);";
+                    var insertSql = $"INSERT INTO pc_student.TEDrones_Contacts (UserName, Email, Phone, Topic, Message) VALUES(@UserName, @Email, @Phone, @Topic, @Message);";
                     var insertId = ds.ExecuteInsertAndGetLastId(insertSql, para);
 
                     if (insertId != 0)

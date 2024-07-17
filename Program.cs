@@ -16,6 +16,7 @@ ConfigureServices(s =>
     s.AddSingleton<editProfile>();
     s.AddSingleton<deleteProfile>();
     s.AddSingleton<drones>();
+    s.AddSingleton<carts>();
     s.AddSingleton<contactUs>();
 
     s.AddCors();
@@ -120,6 +121,18 @@ ConfigureServices(s =>
             if (rData.eventID == "1003") await http.Response.WriteAsJsonAsync(await drones.DeleteDrone(rData));
             if (rData.eventID == "1004") await http.Response.WriteAsJsonAsync(await drones.GetDrone(rData));
             if (rData.eventID == "1005") await http.Response.WriteAsJsonAsync(await drones.GetAllDrones(rData));
+        });
+
+        var carts = e.ServiceProvider.GetRequiredService<carts>();
+        e.MapPost("/carts", [AllowAnonymous] async (HttpContext http) =>
+        {
+            var body = await new StreamReader(http.Request.Body).ReadToEndAsync();
+            requestData rData = JsonSerializer.Deserialize<requestData>(body);
+            if (rData.eventID == "1001") await http.Response.WriteAsJsonAsync(await carts.AddToCart(rData));
+            if (rData.eventID == "1002") await http.Response.WriteAsJsonAsync(await carts.UpdateInCart(rData));
+            if (rData.eventID == "1003") await http.Response.WriteAsJsonAsync(await carts.RemoveFromCart(rData));
+            if (rData.eventID == "1004") await http.Response.WriteAsJsonAsync(await carts.GetACartItem(rData));
+            if (rData.eventID == "1005") await http.Response.WriteAsJsonAsync(await carts.GetAllCartItems(rData));
         });
 
         e.MapGet("/bing",
