@@ -1,6 +1,5 @@
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json;
-using COMMON_PROJECT_STRUCTURE_API.services;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Authorization;
 using MyCommonStructure.Services;
@@ -96,7 +95,7 @@ ConfigureServices(s =>
             if (rData.eventID == "1002") await http.Response.WriteAsJsonAsync(await deleteProfile.DeleteProfileByAdmin(rData)); // delete profile by admin
         });
 
-        var contactUs = e.ServiceProvider.GetRequiredService<contactUs>();
+        var contactUs = e.ServiceProvider.GetRequiredService<contactUs>(); // for contact details
         e.MapPost("/contactUs", [AllowAnonymous] async (HttpContext http) =>
         {
             var body = await new StreamReader(http.Request.Body).ReadToEndAsync();
@@ -109,7 +108,7 @@ ConfigureServices(s =>
 
 
         var drones = e.ServiceProvider.GetRequiredService<drones>();
-        e.MapPost("/drones", [AllowAnonymous] async (HttpContext http) =>
+        e.MapPost("/drones", [AllowAnonymous] async (HttpContext http) => // for drone details
         {
             var body = await new StreamReader(http.Request.Body).ReadToEndAsync();
             requestData rData = JsonSerializer.Deserialize<requestData>(body);
@@ -121,7 +120,7 @@ ConfigureServices(s =>
         });
 
         var carts = e.ServiceProvider.GetRequiredService<carts>();
-        e.MapPost("/carts", [AllowAnonymous] async (HttpContext http) =>
+        e.MapPost("/carts", [AllowAnonymous] async (HttpContext http) => // for cart details
         {
             var body = await new StreamReader(http.Request.Body).ReadToEndAsync();
             requestData rData = JsonSerializer.Deserialize<requestData>(body);
@@ -133,7 +132,7 @@ ConfigureServices(s =>
         });
 
         var users = e.ServiceProvider.GetRequiredService<users>();
-        e.MapPost("/users", [AllowAnonymous] async (HttpContext http) =>
+        e.MapPost("/users", [AllowAnonymous] async (HttpContext http) => // for user details
         {
             var body = await new StreamReader(http.Request.Body).ReadToEndAsync();
             requestData rData = JsonSerializer.Deserialize<requestData>(body);

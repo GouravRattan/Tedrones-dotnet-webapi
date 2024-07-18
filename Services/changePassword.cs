@@ -5,7 +5,7 @@ using System.Text.RegularExpressions;
 using Microsoft.IdentityModel.Tokens;
 using MySql.Data.MySqlClient;
 
-namespace COMMON_PROJECT_STRUCTURE_API.services
+namespace MyCommonStructure.Services
 {
     public class changePassword
     {

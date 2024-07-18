@@ -39,16 +39,16 @@ namespace MyCommonStructure.Services
                 {
                     var deleteSql = @"DELETE FROM pc_student.TEDrones_Users WHERE UserId = @UserId AND UserPassword = @UserPassword;";
                     var rowsAffected = ds.ExecuteInsertAndGetLastId(deleteSql, para);
-                    if (rowsAffected == 0)
-                    {
-                        resData.rData["rCode"] = 3;
-                        resData.rData["rMessage"] = "Invalid credentials, Wrong Id or Password!";
-                    }
-                    else
+                    if (rowsAffected != null)
                     {
                         resData.eventID = req.eventID;
                         resData.rData["rCode"] = 0;
                         resData.rData["rMessage"] = "Profile deleted successfully";
+                    }
+                    else
+                    {
+                        resData.rData["rCode"] = 3;
+                        resData.rData["rMessage"] = "Invalid credentials, Wrong Id or Password!";
                     }
                 }
             }
@@ -83,11 +83,9 @@ namespace MyCommonStructure.Services
                     columnName = "UserId";
                 }
                 string UserId = input;
-                // string UserName = req.addInfo["UserName"].ToString();
                 MySqlParameter[] para = new MySqlParameter[]
                 {
                     new MySqlParameter("@UserId", req.addInfo["UserId"].ToString()),
-                    // new MySqlParameter("@UserName", req.addInfo["UserName"].ToString()),
                 };
 
                 var checkSql = $"SELECT * FROM pc_student.TEDrones_Users WHERE {columnName} = @UserId;";
@@ -101,7 +99,7 @@ namespace MyCommonStructure.Services
                 {
                     var deleteSql = $"DELETE FROM pc_student.TEDrones_Users WHERE {columnName} = @UserId;";
                     var rowsAffected = ds.ExecuteInsertAndGetLastId(deleteSql, para);
-                    if (rowsAffected == 0)
+                    if (rowsAffected == null)
                     {
                         resData.rData["rCode"] = 3;
                         resData.rData["rMessage"] = "Invalid credentials, Wrong Id or Password!";
