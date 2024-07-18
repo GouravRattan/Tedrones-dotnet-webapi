@@ -62,7 +62,7 @@ namespace MyCommonStructure.Services
             return resData;
         }
 
-        public async Task<responseData> GetUserRegistrationByEmail(requestData req)
+        public async Task<responseData> GetUserByEmail(requestData req)
         {
             responseData resData = new responseData();
             resData.rData["rCode"] = 0;

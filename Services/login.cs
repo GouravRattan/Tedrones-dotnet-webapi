@@ -108,7 +108,7 @@ namespace MyCommonStructure.Services
             {
                 if (!rData.addInfo.ContainsKey("Token"))
                 {
-                    resData.rData["rCode"] = 1;
+                    resData.rData["rCode"] = 2;
                     resData.rData["rMessage"] = "Token is required for logout";
                     return resData;
                 }
@@ -121,9 +121,9 @@ namespace MyCommonStructure.Services
 
                 string query = @"DELETE FROM pc_student.TEDrones_Sessions WHERE UserId=@UserId AND Token = @Token";
                 var dbData = ds.ExecuteSQLName(query, myParam);
-                if (dbData == null)
+                if (dbData.Count() == null)
                 {
-                    resData.rData["rCode"] = 1;
+                    resData.rData["rCode"] = 3;
                     resData.rData["rMessage"] = "Failed to logout!!";
                 }
                 else

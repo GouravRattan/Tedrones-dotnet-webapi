@@ -48,7 +48,7 @@ namespace MyCommonStructure.Services
                 if (data == null || data[0].Count() == 0)
                 {
                     resData.rData["rCode"] = 2;
-                    resData.rData["rMessage"] = "Phone number not found, Please enter a valid number";
+                    resData.rData["rMessage"] = "Profile number not found, Please enter a valid details";
                 }
                 else
                 {

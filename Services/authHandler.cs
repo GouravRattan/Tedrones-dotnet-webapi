@@ -12,7 +12,7 @@ using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-public class SourceJwtAuthenticationSchemeOptions:AuthenticationSchemeOptions
+public class SourceJwtAuthenticationSchemeOptions : AuthenticationSchemeOptions
 {
     public string SecretKey { get; set; }
     public string ValidIssuer { get; set; }
@@ -82,7 +82,7 @@ public class SourceJwtAuthenticationHandler : AuthenticationHandler<SourceJwtAut
     public ClaimsPrincipal ValidateJWT(string token)
     {
         //Options.SecretKey
-        
+
         var tokenHandler = new JwtSecurityTokenHandler();
         var key = Encoding.UTF8.GetBytes(Options.SecretKey);
 

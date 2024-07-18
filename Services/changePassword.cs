@@ -65,7 +65,7 @@ namespace COMMON_PROJECT_STRUCTURE_API.services
                         if (rowsAffected[0].Count() != 0)
                         {
                             resData.rData["rCode"] = 3;
-                            resData.rData["rMessage"] = "Password didnt changed!";
+                            resData.rData["rMessage"] = "Failed to change password!";
                         }
                         else
                         {

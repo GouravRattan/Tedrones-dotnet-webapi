@@ -60,12 +60,8 @@ ConfigureServices(s =>
         {
             var body = await new StreamReader(http.Request.Body).ReadToEndAsync();
             requestData rData = JsonSerializer.Deserialize<requestData>(body);
-
-            if (rData.eventID == "1002") // update
-                await http.Response.WriteAsJsonAsync(await register.Registration(rData));
-
-            if (rData.eventID == "1009") // get users details via email
-                await http.Response.WriteAsJsonAsync(await register.GetUserRegistrationByEmail(rData));
+            if (rData.eventID == "1002") await http.Response.WriteAsJsonAsync(await register.Registration(rData));// update
+            if (rData.eventID == "1009") await http.Response.WriteAsJsonAsync(await register.GetUserByEmail(rData));// get users details via email
         });
 
         var changePassword = e.ServiceProvider.GetRequiredService<changePassword>();
@@ -73,8 +69,7 @@ ConfigureServices(s =>
         {
             var body = await new StreamReader(http.Request.Body).ReadToEndAsync();
             requestData rData = JsonSerializer.Deserialize<requestData>(body);
-            if (rData.eventID == "1003") // change Password
-                await http.Response.WriteAsJsonAsync(await changePassword.ChangePassword(rData));
+            if (rData.eventID == "1003") await http.Response.WriteAsJsonAsync(await changePassword.ChangePassword(rData)); // change Password
         });
 
         var resetPassword = e.ServiceProvider.GetRequiredService<resetPassword>();
@@ -82,8 +77,7 @@ ConfigureServices(s =>
         {
             var body = await new StreamReader(http.Request.Body).ReadToEndAsync();
             requestData rData = JsonSerializer.Deserialize<requestData>(body);
-            if (rData.eventID == "1003") // reset Password
-                await http.Response.WriteAsJsonAsync(await resetPassword.ResetPassword(rData));
+            if (rData.eventID == "1003") await http.Response.WriteAsJsonAsync(await resetPassword.ResetPassword(rData)); // reset Password
         });
 
         var editProfile = e.ServiceProvider.GetRequiredService<editProfile>();
