@@ -15,12 +15,9 @@ namespace MyCommonStructure.Services
     {
         dbServices ds = new dbServices();
         decryptService cm = new decryptService();
-
         private readonly Dictionary<string, string> jwt_config = new Dictionary<string, string>();
         private readonly Dictionary<string, string> _service_config = new Dictionary<string, string>();
-
         IConfiguration appsettings = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
-
         public login()
         {
             jwt_config["Key"] = appsettings["jwt_config:Key"].ToString();
@@ -69,6 +66,7 @@ namespace MyCommonStructure.Services
                 }
                 else
                 {
+                    // Create a new session token
                     var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwt_config["Key"]));
                     var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
                     var Sectoken = new JwtSecurityToken(jwt_config["Issuer"],
@@ -76,13 +74,22 @@ namespace MyCommonStructure.Services
                       null,
                       expires: DateTime.Now.AddMinutes(120),
                       signingCredentials: credentials);
-                    var token = new JwtSecurityTokenHandler().WriteToken(Sectoken);
+                    var Token = new JwtSecurityTokenHandler().WriteToken(Sectoken);
+
+                    MySqlParameter[] sessionParams = new MySqlParameter[]
+                    {
+                        new MySqlParameter("@Token", Token),
+                        new MySqlParameter("@UserId", req.addInfo["UserId"].ToString()),
+                    };
+
+                    string sessionQuery = @"INSERT INTO pc_student.TEDrones_Sessions (UserId, Token) VALUES (@UserId, @Token)";
+                    ds.ExecuteSQLName(sessionQuery, sessionParams);
 
                     resData.eventID = req.eventID;
                     resData.rStatus = 200;
                     resData.rData["rCode"] = 0;
                     resData.rData["rMessage"] = "Login Successfully, Welcome!";
-                    resData.rData["token"] = token;
+                    resData.rData["Token"] = Token;
                 }
             }
             catch (Exception ex)
@@ -91,6 +98,46 @@ namespace MyCommonStructure.Services
                 resData.rStatus = 199;
                 resData.rData["rCode"] = 1;
                 resData.rData["rMessage"] = ex.Message.ToString();
+            }
+            return resData;
+        }
+        public async Task<responseData> Logout(requestData rData)
+        {
+            responseData resData = new responseData();
+            try
+            {
+                if (!rData.addInfo.ContainsKey("Token"))
+                {
+                    resData.rData["rCode"] = 1;
+                    resData.rData["rMessage"] = "Token is required for logout";
+                    return resData;
+                }
+
+                MySqlParameter[] myParam = new MySqlParameter[]
+                {
+                    new MySqlParameter("@UserId", rData.addInfo["UserId"]),
+                    new MySqlParameter("@Token", rData.addInfo["Token"]),
+                };
+
+                string query = @"DELETE FROM pc_student.TEDrones_Sessions WHERE UserId=@UserId AND Token = @Token";
+                var dbData = ds.ExecuteSQLName(query, myParam);
+                if (dbData == null)
+                {
+                    resData.rData["rCode"] = 1;
+                    resData.rData["rMessage"] = "Failed to logout!!";
+                }
+                else
+                {
+                    resData.eventID = rData.eventID;
+                    resData.rStatus = 200;
+                    resData.rData["rCode"] = 0;
+                    resData.rData["rMessage"] = "Logout Successfully";
+                }
+            }
+            catch (Exception ex)
+            {
+                resData.rData["rCode"] = 1;
+                resData.rData["rMessage"] = "Error: " + ex.Message;
             }
             return resData;
         }

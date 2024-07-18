@@ -50,8 +50,8 @@ ConfigureServices(s =>
             {
                 var body = await new StreamReader(http.Request.Body).ReadToEndAsync();
                 requestData rData = JsonSerializer.Deserialize<requestData>(body);
-                if (rData.eventID == "1001") // update
-                    await http.Response.WriteAsJsonAsync(await login.Login(rData));
+                if (rData.eventID == "1001") await http.Response.WriteAsJsonAsync(await login.Login(rData));// login
+                if (rData.eventID == "1002") await http.Response.WriteAsJsonAsync(await login.Logout(rData));// logout
             });
 
         var register = e.ServiceProvider.GetRequiredService<register>();
