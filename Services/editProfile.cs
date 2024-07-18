@@ -15,9 +15,6 @@ namespace MyCommonStructure.Services
             resData.rData["rCode"] = 0;
             try
             {
-                // string base64Image = req.addInfo["ProfilePic"].ToString();
-                // byte[] ProfilePic = Convert.FromBase64String(base64Image);
-
                 MySqlParameter[] para = new MySqlParameter[]
                 {
                     new MySqlParameter("@UserId", req.addInfo["UserId"].ToString()),
@@ -26,11 +23,11 @@ namespace MyCommonStructure.Services
                     new MySqlParameter("@Phone", req.addInfo["Phone"].ToString()),
                     new MySqlParameter("@Address", req.addInfo["Address"].ToString()),
                     new MySqlParameter("@ProfilePic", req.addInfo["ProfilePic"].ToString()),
-                    new MySqlParameter("@UserPassword", req.addInfo["UserPassword"].ToString()),
+                    // new MySqlParameter("@UserPassword", req.addInfo["UserPassword"].ToString()),
                 };
 
                 var updateSql = @"UPDATE pc_student.TEDrones_Users 
-                                SET UserName = @UserName, Email = @Email, Phone = @Phone, Address = @Address, ProfilePic = @ProfilePic," + @" UserPassword = @UserPassword 
+                                SET UserName = @UserName, Email = @Email, Phone = @Phone, Address = @Address, ProfilePic = @ProfilePic 
                                 WHERE UserId = @UserId";
                 var rowsAffected = ds.ExecuteInsertAndGetLastId(updateSql, para);
                 if (rowsAffected != 0)

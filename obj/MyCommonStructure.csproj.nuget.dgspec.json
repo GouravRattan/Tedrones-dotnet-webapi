@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\gourav.rattan\\Desktop\\MyCommonStructure\\MyCommonStructure.csproj": {}
+    "C:\\Users\\gourav.rattan\\Desktop\\TEDrone PROJECT\\TEDrone-backend\\MyCommonStructure\\MyCommonStructure.csproj": {}
   },
   "projects": {
-    "C:\\Users\\gourav.rattan\\Desktop\\MyCommonStructure\\MyCommonStructure.csproj": {
+    "C:\\Users\\gourav.rattan\\Desktop\\TEDrone PROJECT\\TEDrone-backend\\MyCommonStructure\\MyCommonStructure.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\gourav.rattan\\Desktop\\MyCommonStructure\\MyCommonStructure.csproj",
+        "projectUniqueName": "C:\\Users\\gourav.rattan\\Desktop\\TEDrone PROJECT\\TEDrone-backend\\MyCommonStructure\\MyCommonStructure.csproj",
         "projectName": "MyCommonStructure",
-        "projectPath": "C:\\Users\\gourav.rattan\\Desktop\\MyCommonStructure\\MyCommonStructure.csproj",
+        "projectPath": "C:\\Users\\gourav.rattan\\Desktop\\TEDrone PROJECT\\TEDrone-backend\\MyCommonStructure\\MyCommonStructure.csproj",
         "packagesPath": "C:\\Users\\gourav.rattan\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\gourav.rattan\\Desktop\\MyCommonStructure\\obj\\",
+        "outputPath": "C:\\Users\\gourav.rattan\\Desktop\\TEDrone PROJECT\\TEDrone-backend\\MyCommonStructure\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\gourav.rattan\\AppData\\Roaming\\NuGet\\NuGet.Config",

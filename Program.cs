@@ -9,15 +9,16 @@ WebHost.CreateDefaultBuilder().
 ConfigureServices(s =>
 {
     IConfiguration appsettings = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
-    s.AddSingleton<login>();
     s.AddSingleton<register>();
+    s.AddSingleton<login>();
     s.AddSingleton<changePassword>();
     s.AddSingleton<resetPassword>();
     s.AddSingleton<editProfile>();
     s.AddSingleton<deleteProfile>();
+    s.AddSingleton<contactUs>();
     s.AddSingleton<drones>();
     s.AddSingleton<carts>();
-    s.AddSingleton<contactUs>();
+    s.AddSingleton<users>();
 
     s.AddCors();
     s.AddControllers();
@@ -31,37 +32,35 @@ ConfigureServices(s =>
         });
 }).Configure(app =>
 {
-    app.UseAuthorization();
-    app.UseAuthentication();
-
     app.UseCors(options =>
              options.WithOrigins("https://localhost:5001", "http://localhost:5002")
-            // options.WithOrigins("*")
             .AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
     app.UseRouting();
     app.UseStaticFiles();
 
+    app.UseAuthorization();
+    app.UseAuthentication();
+
     app.UseEndpoints(e =>
     {
-        var login = e.ServiceProvider.GetRequiredService<login>();
-
-        e.MapPost("/login",
-            [AllowAnonymous] async (HttpContext http) =>
-            {
-                var body = await new StreamReader(http.Request.Body).ReadToEndAsync();
-                requestData rData = JsonSerializer.Deserialize<requestData>(body);
-                if (rData.eventID == "1001") await http.Response.WriteAsJsonAsync(await login.Login(rData));// login
-                if (rData.eventID == "1002") await http.Response.WriteAsJsonAsync(await login.Logout(rData));// logout
-            });
-
         var register = e.ServiceProvider.GetRequiredService<register>();
         e.MapPost("/registration",
         [AllowAnonymous] async (HttpContext http) =>
         {
             var body = await new StreamReader(http.Request.Body).ReadToEndAsync();
             requestData rData = JsonSerializer.Deserialize<requestData>(body);
-            if (rData.eventID == "1002") await http.Response.WriteAsJsonAsync(await register.Registration(rData));// update
-            if (rData.eventID == "1009") await http.Response.WriteAsJsonAsync(await register.GetUserByEmail(rData));// get users details via email
+            if (rData.eventID == "1001") await http.Response.WriteAsJsonAsync(await register.Registration(rData)); // register
+            if (rData.eventID == "1002") await http.Response.WriteAsJsonAsync(await register.GetUserByEmail(rData)); // get users details via email
+        });
+
+        var login = e.ServiceProvider.GetRequiredService<login>();
+        e.MapPost("/login",
+        [AllowAnonymous] async (HttpContext http) =>
+        {
+            var body = await new StreamReader(http.Request.Body).ReadToEndAsync();
+            requestData rData = JsonSerializer.Deserialize<requestData>(body);
+            if (rData.eventID == "1001") await http.Response.WriteAsJsonAsync(await login.Login(rData)); // login
+            if (rData.eventID == "1002") await http.Response.WriteAsJsonAsync(await login.Logout(rData)); // logout
         });
 
         var changePassword = e.ServiceProvider.GetRequiredService<changePassword>();
@@ -69,7 +68,7 @@ ConfigureServices(s =>
         {
             var body = await new StreamReader(http.Request.Body).ReadToEndAsync();
             requestData rData = JsonSerializer.Deserialize<requestData>(body);
-            if (rData.eventID == "1003") await http.Response.WriteAsJsonAsync(await changePassword.ChangePassword(rData)); // change Password
+            if (rData.eventID == "1001") await http.Response.WriteAsJsonAsync(await changePassword.ChangePassword(rData)); // change Password
         });
 
         var resetPassword = e.ServiceProvider.GetRequiredService<resetPassword>();
@@ -77,7 +76,7 @@ ConfigureServices(s =>
         {
             var body = await new StreamReader(http.Request.Body).ReadToEndAsync();
             requestData rData = JsonSerializer.Deserialize<requestData>(body);
-            if (rData.eventID == "1003") await http.Response.WriteAsJsonAsync(await resetPassword.ResetPassword(rData)); // reset Password
+            if (rData.eventID == "1001") await http.Response.WriteAsJsonAsync(await resetPassword.ResetPassword(rData)); // reset Password
         });
 
         var editProfile = e.ServiceProvider.GetRequiredService<editProfile>();
@@ -85,7 +84,7 @@ ConfigureServices(s =>
         {
             var body = await new StreamReader(http.Request.Body).ReadToEndAsync();
             requestData rData = JsonSerializer.Deserialize<requestData>(body);
-            if (rData.eventID == "1004") await http.Response.WriteAsJsonAsync(await editProfile.EditProfile(rData));
+            if (rData.eventID == "1001") await http.Response.WriteAsJsonAsync(await editProfile.EditProfile(rData)); // edit profile
         });
 
         var deleteProfile = e.ServiceProvider.GetRequiredService<deleteProfile>();
@@ -93,7 +92,8 @@ ConfigureServices(s =>
         {
             var body = await new StreamReader(http.Request.Body).ReadToEndAsync();
             requestData rData = JsonSerializer.Deserialize<requestData>(body);
-            if (rData.eventID == "1005") await http.Response.WriteAsJsonAsync(await deleteProfile.DeleteProfile(rData));
+            if (rData.eventID == "1001") await http.Response.WriteAsJsonAsync(await deleteProfile.DeleteProfileByUser(rData)); // delete profile by user
+            if (rData.eventID == "1002") await http.Response.WriteAsJsonAsync(await deleteProfile.DeleteProfileByAdmin(rData)); // delete profile by admin
         });
 
         var contactUs = e.ServiceProvider.GetRequiredService<contactUs>();
@@ -130,6 +130,16 @@ ConfigureServices(s =>
             if (rData.eventID == "1003") await http.Response.WriteAsJsonAsync(await carts.RemoveFromCart(rData));
             if (rData.eventID == "1004") await http.Response.WriteAsJsonAsync(await carts.GetACartItem(rData));
             if (rData.eventID == "1005") await http.Response.WriteAsJsonAsync(await carts.GetAllCartItems(rData));
+        });
+
+        var users = e.ServiceProvider.GetRequiredService<users>();
+        e.MapPost("/users", [AllowAnonymous] async (HttpContext http) =>
+        {
+            var body = await new StreamReader(http.Request.Body).ReadToEndAsync();
+            requestData rData = JsonSerializer.Deserialize<requestData>(body);
+            if (rData.eventID == "1001") await http.Response.WriteAsJsonAsync(await users.GetAllUsers(rData));
+            if (rData.eventID == "1002") await http.Response.WriteAsJsonAsync(await users.GetUserById(rData));
+            if (rData.eventID == "1003") await http.Response.WriteAsJsonAsync(await users.DeleteUserById(rData));
         });
 
         e.MapGet("/bing",
