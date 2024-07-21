@@ -45,8 +45,6 @@ CREATE TABLE IF NOT EXISTS pc_student.TEDrones_Carts (
     Status ENUM('active', 'purchased', 'removed') NOT NULL DEFAULT 'active',
     Color VARCHAR(50),
     Size VARCHAR(50),
-    Configuration TEXT,
-    Notes TEXT,
     Discount DECIMAL(10, 2) DEFAULT 0.00,
     ShippingMethod VARCHAR(100),
     ShippingCost DECIMAL(10, 2),
@@ -54,7 +52,53 @@ CREATE TABLE IF NOT EXISTS pc_student.TEDrones_Carts (
     FOREIGN KEY (UserId) REFERENCES TEDrones_Users(UserId),
     FOREIGN KEY (DroneId) REFERENCES All_Drones(DroneId)
 );
+UPDATE pc_student.TEDrones_Carts
+SET Quantity = 2,
+    Price = 600.00,
+    TotalPrice = 1200.00
+WHERE CartId = 8;
+ALTER TABLE pc_student.TEDrones_Carts MODIFY TotalPrice DECIMAL(10, 2) AS (Price * Quantity) STORED;
+ALTER TABLE pc_student.TEDrones_Carts ADD COLUMN DroneId INT NOT NULL AFTER UserId;
+INSERT INTO pc_student.TEDrones_Carts (UserId, Quantity, Price, TotalPrice) VALUES (1, 3, 500.00, 1500.00);
+SET @CartId = LAST_INSERT_ID();
+DROP TABLE IF EXISTS pc_student.TEDrones_Carts;
 SELECT * FROM pc_student.TEDrones_Carts;
+
+CREATE TABLE IF NOT EXISTS pc_student.TEDrones_CartItems (
+    CartItemId INT AUTO_INCREMENT PRIMARY KEY,
+    CartId INT NOT NULL,
+    DroneId INT NOT NULL,
+    Quantity INT NOT NULL DEFAULT 1,
+    Price DECIMAL(10, 2) NOT NULL,
+    TotalPrice DECIMAL(10, 2) NOT NULL,
+    AddedDateTime DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    Status ENUM('active', 'purchased', 'removed') NOT NULL DEFAULT 'active',
+    Color VARCHAR(50),
+    Size VARCHAR(50),
+    Discount DECIMAL(10, 2) DEFAULT 0.00,
+    ShippingMethod VARCHAR(100),
+    ShippingCost DECIMAL(10, 2),
+    LastUpdatedDateTime DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (CartId) REFERENCES pc_student.TEDrones_Carts(CartId),
+    FOREIGN KEY (DroneId) REFERENCES All_Drones(DroneId)
+);
+UPDATE pc_student.TEDrones_CartItems
+SET DroneId = 4,
+    Quantity = 1,
+    Price = 600.00,
+    TotalPrice = 600.00,
+    Color = 'Blue',
+    Size = 'Medium',
+    Discount = 10.00,
+    ShippingMethod = 'Standard',
+    ShippingCost = 5.00
+WHERE CartItemId = 1;
+INSERT INTO pc_student.TEDrones_CartItems (CartId, DroneId, Quantity, Price, TotalPrice, Color, Size, Discount, ShippingMethod, ShippingCost)
+VALUES 
+(@CartId, 1, 1, 500.00, 500.00, 'Red', 'Small',  0.00, 'Express', 5.00),
+(@CartId, 2, 1, 500.00, 500.00, 'Green', 'Medium',  0.00, 'Express', 5.00),
+(@CartId, 3, 1, 500.00, 500.00, 'Blue', 'Large', 0.00, 'Express', 10.00);
+SELECT * FROM pc_student.TEDrones_CartItems;
 
 CREATE TABLE IF NOT EXISTS pc_student.TEDrones_Contacts (
     ContactId INT AUTO_INCREMENT PRIMARY KEY,
@@ -79,5 +123,6 @@ CREATE TABLE IF NOT EXISTS pc_student.TEDrones_Sessions (
     Token LONGTEXT NOT NULL,
     UserId VARCHAR(255) NOT NULL
 );
+TRUNCATE TABLE pc_student.TEDrones_Sessions;
 SELECT * FROM pc_student.TEDrones_Sessions;
 
