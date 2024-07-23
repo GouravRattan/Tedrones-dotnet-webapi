@@ -188,6 +188,101 @@ namespace MyCommonStructure.Services
             return resData;
         }
 
+        public async Task<responseData> EditUserPic(requestData req)
+        {
+            responseData resData = new responseData();
+            resData.rData["rCode"] = 0;
+            try
+            {
+
+                MySqlParameter[] para = new MySqlParameter[]
+                {
+                    new MySqlParameter("@UserId", req.addInfo["UserId"].ToString()),
+                    new MySqlParameter("@ProfilePic", req.addInfo["ProfilePic"].ToString()),
+                };
+
+                var checkSql = $"SELECT * FROM pc_student.TEDrones_Users WHERE UserId = @UserId;";
+                var checkResult = ds.executeSQL(checkSql, para);
+
+                if (checkResult[0].Count() == 0)
+                {
+                    resData.rData["rCode"] = 2;
+                    resData.rData["rMessage"] = "Profile not found, can not update the picture!";
+                }
+                else
+                {
+                    string updateSql = $"UPDATE pc_student.TEDrones_Users SET ProfilePic = @ProfilePic WHERE UserId = @UserId;";
+                    var rowsAffected = ds.ExecuteInsertAndGetLastId(updateSql, para);
+                    if (rowsAffected == null)
+                    {
+                        resData.rData["rCode"] = 3;
+                        resData.rData["rMessage"] = "Invalid credentials, Wrong Id or Password!";
+                    }
+                    else
+                    {
+                        resData.eventID = req.eventID;
+                        resData.rData["rCode"] = 0;
+                        resData.rData["rMessage"] = "Profile Pic updated successfully";
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                resData.rStatus = 402;
+                resData.rData["rCode"] = 1;
+                resData.rData["rMessage"] = $"Error: {ex.Message}";
+            }
+            return resData;
+        }
+
+
+        public async Task<responseData> DeleteUserPic(requestData req)
+        {
+            responseData resData = new responseData();
+            resData.rData["rCode"] = 0;
+            try
+            {
+                MySqlParameter[] para = new MySqlParameter[]
+                {
+                    new MySqlParameter("@UserId", req.addInfo["UserId"].ToString()),
+                    // new MySqlParameter("@ProfilePic", req.addInfo["ProfilePic"].ToString()),
+                };
+
+                var checkSql = $"SELECT * FROM pc_student.TEDrones_Users WHERE UserId = @UserId;";
+                var checkResult = ds.executeSQL(checkSql, para);
+
+                if (checkResult[0].Count() == 0)
+                {
+                    resData.rData["rCode"] = 2;
+                    resData.rData["rMessage"] = "Profile not found, No records deleted!";
+                }
+                else
+                {
+                    var updateSql = $"UPDATE pc_student.TEDrones_Users SET ProfilePic = NULL WHERE UserId = @UserId;";
+                    var rowsAffected = ds.ExecuteInsertAndGetLastId(updateSql, para);
+                    if (rowsAffected == null)
+
+                    {
+                        resData.rData["rCode"] = 3;
+                        resData.rData["rMessage"] = "Failed to remove Profile pic";
+                    }
+                    else
+                    {
+                        resData.eventID = req.eventID;
+                        resData.rData["rCode"] = 0;
+                        resData.rData["rMessage"] = "Profile removed Sucessfully";
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                resData.rStatus = 402;
+                resData.rData["rCode"] = 1;
+                resData.rData["rMessage"] = $"Error: {ex.Message}";
+            }
+            return resData;
+        }
+
         public static bool IsValidEmail(string email)
         {
             string pattern = @"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$";

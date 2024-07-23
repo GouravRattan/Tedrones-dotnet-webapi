@@ -67,7 +67,7 @@ ConfigureServices(s =>
         {
             var body = await new StreamReader(http.Request.Body).ReadToEndAsync();
             requestData rData = JsonSerializer.Deserialize<requestData>(body);
-            if (rData.eventID == "1001") await http.Response.WriteAsJsonAsync(await changePassword.ChangePassword(rData)); // change Password
+            if (rData.eventID == "1001") await http.Response.WriteAsJsonAsync(await changePassword.ChangePassword(rData)); // change Password   
         });
 
         var resetPassword = e.ServiceProvider.GetRequiredService<resetPassword>();
@@ -139,6 +139,8 @@ ConfigureServices(s =>
             if (rData.eventID == "1001") await http.Response.WriteAsJsonAsync(await users.GetAllUsers(rData));
             if (rData.eventID == "1002") await http.Response.WriteAsJsonAsync(await users.GetUserById(rData));
             if (rData.eventID == "1003") await http.Response.WriteAsJsonAsync(await users.DeleteUserById(rData));
+            if (rData.eventID == "1004") await http.Response.WriteAsJsonAsync(await users.EditUserPic(rData));
+            if (rData.eventID == "1005") await http.Response.WriteAsJsonAsync(await users.DeleteUserPic(rData));
         });
 
         e.MapGet("/bing",

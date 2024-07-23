@@ -1,5 +1,5 @@
 USE pc_student;
-CREATE TABLE IF NOT EXISTS pc_student.All_Drones (
+CREATE TABLE IF NOT EXISTS pc_student.TEDrones_Drones (
     DroneId INT AUTO_INCREMENT PRIMARY KEY,
     Name VARCHAR(255) NOT NULL,
     Description TEXT,
@@ -7,14 +7,14 @@ CREATE TABLE IF NOT EXISTS pc_student.All_Drones (
     ImageUrl VARCHAR(255),
     ImageThumbnailUrl VARCHAR(255)
 );
-INSERT INTO pc_student.All_Drones (Name, Description, Price, ImageUrl) VALUES
+INSERT INTO pc_student.TEDrones_Drones (Name, Description, Price, ImageUrl) VALUES
 ('DJI Mavic 3 Pro', '4/3 CMOS Hasselblad Camera | Dual Tele Cameras | Cine Only Tri-Camera Apple ProRes Support | 43-Min Max Flight Time | Omnidirectional Obstacle Sensing | 15km HD Video Transmission', '200', 'path/to/p1.jpg'),
 ('DJI Mavic 3 Pro', '4/3 CMOS Hasselblad Camera | Dual Tele Cameras | Cine Only Tri-Camera Apple ProRes Support | 43-Min Max Flight Time | Omnidirectional Obstacle Sensing | 15km HD Video Transmission', '200', 'path/to/p2.jpg'),
 ('DJI Mavic 3 Pro', '4/3 CMOS Hasselblad Camera | Dual Tele Cameras | Cine Only Tri-Camera Apple ProRes Support | 43-Min Max Flight Time | Omnidirectional Obstacle Sensing | 15km HD Video Transmission', '200', 'path/to/p3.jpg'),
 ('DJI Mavic 3 Pro', '4/3 CMOS Hasselblad Camera | Dual Tele Cameras | Cine Only Tri-Camera Apple ProRes Support | 43-Min Max Flight Time | Omnidirectional Obstacle Sensing | 15km HD Video Transmission', '200', 'path/to/p4.jpg'),
 ('DJI Mavic 3 Pro', '4/3 CMOS Hasselblad Camera | Dual Tele Cameras | Cine Only Tri-Camera Apple ProRes Support | 43-Min Max Flight Time | Omnidirectional Obstacle Sensing | 15km HD Video Transmission', '20', 'path/to/p5.jpg'),
 ('DJI Mavic 3 Pro', '4/3 CMOS Hasselblad Camera | Dual Tele Cameras | Cine Only Tri-Camera Apple ProRes Support | 43-Min Max Flight Time | Omnidirectional Obstacle Sensing | 15km HD Video Transmission', '200', 'path/to/p6.jpg');
-SELECT * FROM pc_student.All_Drones;
+SELECT * FROM pc_student.TEDrones_Drones;
 
 CREATE TABLE IF NOT EXISTS pc_student.TEDrones_Users (
     UserId INT AUTO_INCREMENT PRIMARY KEY,
