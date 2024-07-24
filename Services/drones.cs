@@ -21,7 +21,7 @@ namespace MyCommonStructure.Services
                     new MySqlParameter("@Name", rData.addInfo["Name"]),
                 };
 
-                var checkQuery = @"SELECT * FROM pc_student.All_Drones WHERE Name = @Name;";
+                var checkQuery = @"SELECT * FROM pc_student.TEDrones_Drones WHERE Name = @Name;";
                 var dbCheckData = ds.ExecuteSQLName(checkQuery, checkParams);
                 if (dbCheckData[0].Count() != 0)
                 {
@@ -38,7 +38,7 @@ namespace MyCommonStructure.Services
                         new MySqlParameter("@ImageUrl", rData.addInfo["ImageUrl"]),
                         new MySqlParameter("@ImageThumbnailUrl", rData.addInfo["ImageThumbnailUrl"]),
                     };
-                    var insertQuery = @"INSERT INTO pc_student.All_Drones (Name, Description, Price, ImageUrl, ImageThumbnailUrl) 
+                    var insertQuery = @"INSERT INTO pc_student.TEDrones_Drones (Name, Description, Price, ImageUrl, ImageThumbnailUrl) 
                                         VALUES (@Name, @Description, @Price, @ImageUrl, @ImageThumbnailUrl);";
                     int rowsAffected = ds.ExecuteInsertAndGetLastId(insertQuery, insertParams);
 
@@ -76,7 +76,7 @@ namespace MyCommonStructure.Services
                     new MySqlParameter("@DroneId", rData.addInfo["DroneId"]),
                 };
 
-                var query = @"SELECT * FROM pc_student.All_Drones WHERE DroneId=@DroneId";
+                var query = @"SELECT * FROM pc_student.TEDrones_Drones WHERE DroneId=@DroneId";
                 var dbData = ds.ExecuteSQLName(query, checkParams);
                 if (dbData[0].Count() == 0)
                 {
@@ -94,7 +94,7 @@ namespace MyCommonStructure.Services
                         new MySqlParameter("@ImageUrl", rData.addInfo["ImageUrl"]),
                         new MySqlParameter("@ImageThumbnailUrl", rData.addInfo["ImageThumbnailUrl"]),
                    };
-                    var updatequery = @"UPDATE pc_student.All_Drones
+                    var updatequery = @"UPDATE pc_student.TEDrones_Drones
                                         SET Name = @Name, Description = @Description, Price = @Price, ImageUrl = @ImageUrl, ImageThumbnailUrl = @ImageThumbnailUrl
                                         WHERE DroneId = @DroneId;";
                     var updatedata = ds.ExecuteInsertAndGetLastId(updatequery, updateParams);
@@ -132,7 +132,7 @@ namespace MyCommonStructure.Services
                     new MySqlParameter("@Name", rData.addInfo["Name"].ToString())
                 };
 
-                var query = @"SELECT * FROM pc_student.All_Drones WHERE DroneId=@DroneId OR Name=@Name;";
+                var query = @"SELECT * FROM pc_student.TEDrones_Drones WHERE DroneId=@DroneId OR Name=@Name;";
                 var dbData = ds.ExecuteSQLName(query, para);
                 if (dbData[0].Count() == 0)
                 {
@@ -141,7 +141,7 @@ namespace MyCommonStructure.Services
                 }
                 else
                 {
-                    var deleteSql = $"DELETE FROM pc_student.All_Drones WHERE DroneId=@DroneId OR Name = @Name";
+                    var deleteSql = $"DELETE FROM pc_student.TEDrones_Drones WHERE DroneId=@DroneId OR Name = @Name";
                     var rowsAffected = ds.ExecuteInsertAndGetLastId(deleteSql, para);
                     if (rowsAffected == 0)
                     {
@@ -184,7 +184,7 @@ namespace MyCommonStructure.Services
                     new MySqlParameter("@Description", req.addInfo["Description"])
                 };
 
-                string getsql = $"SELECT * FROM pc_student.All_Drones " +
+                string getsql = $"SELECT * FROM pc_student.TEDrones_Drones " +
                              "WHERE DroneId = @DroneId OR Name = @Name OR Description = @Description;";
                 var Dronedata = ds.ExecuteSQLName(getsql, myParams);
                 if (Dronedata == null || Dronedata.Count == 0 || Dronedata[0].Count() == 0)
@@ -219,7 +219,7 @@ namespace MyCommonStructure.Services
             resData.eventID = req.eventID;
             try
             {
-                var query = @"SELECT * FROM pc_student.All_Drones ORDER BY DroneId ASC";
+                var query = @"SELECT * FROM pc_student.TEDrones_Drones ORDER BY DroneId ASC";
                 var dbData = ds.executeSQL(query, null);
                 if (dbData == null)
                 {

@@ -22,12 +22,12 @@ namespace MyCommonStructure.Services
                     new MySqlParameter("@Email", req.addInfo["Email"].ToString()),
                     new MySqlParameter("@Phone", req.addInfo["Phone"].ToString()),
                     new MySqlParameter("@Address", req.addInfo["Address"].ToString()),
-                    new MySqlParameter("@ProfilePic", req.addInfo["ProfilePic"].ToString()),
+                    // new MySqlParameter("@ProfilePic", req.addInfo["ProfilePic"].ToString()),
                     // new MySqlParameter("@UserPassword", req.addInfo["UserPassword"].ToString()),
                 };
 
                 var updateSql = @"UPDATE pc_student.TEDrones_Users 
-                                SET UserName = @UserName, Email = @Email, Phone = @Phone, Address = @Address, ProfilePic = @ProfilePic 
+                                SET UserName = @UserName, Email = @Email, Phone = @Phone, Address = @Address
                                 WHERE UserId = @UserId";
                 var rowsAffected = ds.ExecuteInsertAndGetLastId(updateSql, para);
                 if (rowsAffected != 0)
