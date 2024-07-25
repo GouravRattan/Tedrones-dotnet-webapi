@@ -89,6 +89,7 @@ namespace MyCommonStructure.Services
                     resData.rStatus = 200;
                     resData.rData["rCode"] = 0;
                     resData.rData["rMessage"] = "Login Successfully, Welcome!";
+                    resData.rData["UserId"] = input;
                     resData.rData["Token"] = Token;
                 }
             }

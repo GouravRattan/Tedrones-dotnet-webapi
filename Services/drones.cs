@@ -36,10 +36,10 @@ namespace MyCommonStructure.Services
                         new MySqlParameter("@Description", rData.addInfo["Description"]),
                         new MySqlParameter("@Price", rData.addInfo["Price"]),
                         new MySqlParameter("@ImageUrl", rData.addInfo["ImageUrl"]),
-                        new MySqlParameter("@ImageThumbnailUrl", rData.addInfo["ImageThumbnailUrl"]),
+                        new MySqlParameter("@ProductType", rData.addInfo["ProductType"]),
                     };
-                    var insertQuery = @"INSERT INTO pc_student.TEDrones_Drones (Name, Description, Price, ImageUrl, ImageThumbnailUrl) 
-                                        VALUES (@Name, @Description, @Price, @ImageUrl, @ImageThumbnailUrl);";
+                    var insertQuery = @"INSERT INTO pc_student.TEDrones_Drones (Name, Description, Price, ImageUrl, ProductType) 
+                                        VALUES (@Name, @Description, @Price, @ImageUrl, @ProductType);";
                     int rowsAffected = ds.ExecuteInsertAndGetLastId(insertQuery, insertParams);
 
                     if (rowsAffected > 0)
@@ -92,10 +92,10 @@ namespace MyCommonStructure.Services
                         new MySqlParameter("@Description", rData.addInfo["Description"]),
                         new MySqlParameter("@Price", rData.addInfo["Price"]),
                         new MySqlParameter("@ImageUrl", rData.addInfo["ImageUrl"]),
-                        new MySqlParameter("@ImageThumbnailUrl", rData.addInfo["ImageThumbnailUrl"]),
+                        new MySqlParameter("@ProductType", rData.addInfo["ProductType"]),
                    };
                     var updatequery = @"UPDATE pc_student.TEDrones_Drones
-                                        SET Name = @Name, Description = @Description, Price = @Price, ImageUrl = @ImageUrl, ImageThumbnailUrl = @ImageThumbnailUrl
+                                        SET Name = @Name, Description = @Description, Price = @Price, ImageUrl = @ImageUrl, ProductType=@ProductType
                                         WHERE DroneId = @DroneId;";
                     var updatedata = ds.ExecuteInsertAndGetLastId(updatequery, updateParams);
                     if (updatedata != 0)
@@ -200,7 +200,7 @@ namespace MyCommonStructure.Services
                     resData.rData["Description"] = DroneData["Description"];
                     resData.rData["Price"] = DroneData["Price"];
                     resData.rData["ImageUrl"] = DroneData["ImageUrl"];
-                    resData.rData["ImageThumbnailUrl"] = DroneData["ImageThumbnailUrl"];
+                    resData.rData["ProductType"] = DroneData["ProductType"];
                 }
             }
             catch (Exception ex)
@@ -253,7 +253,7 @@ namespace MyCommonStructure.Services
                                     Description = rowData.ElementAtOrDefault(2),
                                     Price = rowData.ElementAtOrDefault(3),
                                     ImageUrl = rowData.ElementAtOrDefault(4),
-                                    ImageThumbnailUrl = rowData.ElementAtOrDefault(5)
+                                    ProductType = rowData.ElementAtOrDefault(5)
                                 };
                                 dronesList.Add(drone);
                             }
