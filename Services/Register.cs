@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using MySql.Data.MySqlClient;
-using Org.BouncyCastle.Ocsp;
+using System.Net.Mail;
+using System.Net;
+using System.Net.Sockets;
 
 namespace MyCommonStructure.Services
 {
@@ -44,8 +46,10 @@ namespace MyCommonStructure.Services
                     {
                         resData.eventID = req.eventID;
                         resData.rData["rCode"] = 0;
-                        resData.rStatus = 200;
+                        await SendOTPToEmail(req.addInfo["Email"].ToString(), req.addInfo["UserName"].ToString());
                         resData.rData["rMessage"] = "Registered successfully!";
+                        
+
                     }
                     else
                     {
@@ -60,6 +64,77 @@ namespace MyCommonStructure.Services
                 resData.rData["rMessage"] = $"Error: {ex.Message}";
             }
             return resData;
+        }
+        private async Task SendOTPToEmail(string email, string userName)
+        // private async Task SendOTPToEmail(string email, string emailOtp)
+        {
+
+            Console.WriteLine($"Sending OTP {email}");
+            try
+            {
+                var fromAddress = new MailAddress("jeevank028@gmail.com");
+                var toAddress = new MailAddress(email);
+                const string fromPassword = "dznk ezxs tfbc wfxb";
+                const string subject = "";
+                // String userName = "TravelMates";
+
+
+                // string body = $"Your OTP code is {emailOtp}. This code is valid for 5 minutes.";
+                string body = $@"
+                Dear {userName},
+
+                Thank you for using TravelMates.
+
+                Your One-Time Password (OTP) is . This code is valid for 5 minutes. Please enter it to complete your verification process.
+
+                If you did not request this code, please ignore this message.
+
+                Thank you for your attention.
+
+                Best regards,  
+                The TravelMates Team
+                ";
+
+                var smtp = new SmtpClient
+                {
+                    Host = "smtp.gmail.com",
+                    Port = 587,
+                    EnableSsl = true,
+                    DeliveryMethod = SmtpDeliveryMethod.Network,
+                    UseDefaultCredentials = false,
+                    Credentials = new NetworkCredential(fromAddress.Address, fromPassword)
+                };
+
+                using (var message = new MailMessage(fromAddress, toAddress)
+                {
+                    Subject = subject,
+                    Body = body
+                })
+                {
+                    await smtp.SendMailAsync(message);
+                }
+
+                Console.WriteLine("OTP email sent successfully to " + email);
+            }
+            catch (SmtpException smtpEx)
+            {
+                Console.WriteLine("SMTP Exception: " + smtpEx.Message);
+                if (smtpEx.InnerException != null)
+                {
+                    Console.WriteLine("Inner Exception: " + smtpEx.InnerException.Message);
+                }
+                throw;  // Re-throw the exception after logging it
+            }
+            catch (SocketException socketEx)
+            {
+                Console.WriteLine("Socket Exception: " + socketEx.Message);
+                throw;  // Re-throw the exception after logging it
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("An unexpected error occurred: " + ex.Message);
+                throw;  // Re-throw the exception after logging it
+            }
         }
 
         public async Task<responseData> GetUserByEmail(requestData req)

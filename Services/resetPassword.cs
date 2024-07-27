@@ -4,6 +4,9 @@ using System.Text;
 using System.Text.RegularExpressions;
 using Microsoft.IdentityModel.Tokens;
 using MySql.Data.MySqlClient;
+using System;
+using System.Net;
+using System.Net.Mail;
 
 namespace MyCommonStructure.Services
 {
@@ -24,15 +27,14 @@ namespace MyCommonStructure.Services
 
                 var sql = @"select * from pc_student.TEDrones_Users where Phone=@Phone;";
                 var data = ds.ExecuteSQLName(sql, para);
-                if (data == null && data[0].Count() == 0)
+                if (data[0].Count() == 0)
                 {
                     resData.rData["rCode"] = 1;
                     resData.rStatus = 404;
-                    resData.rData["rMessage"] = "Invalid Credentials";
+                    resData.rData["rMessage"] = "Phone number dont exists!!";
                 }
                 else
                 {
-                    // Generate a new OTP
                     string otp = GenerateOTP();
 
                     MySqlParameter[] sessionParams = new MySqlParameter[]
@@ -191,6 +193,50 @@ namespace MyCommonStructure.Services
         }
 
 
+        public async Task<responseData> SendEmailToUser(requestData req)
+        {
+            responseData resData = new responseData();
+            resData.rData["rCode"] = 0;
+            try
+            {
+                string fromEmail = req.addInfo["FromEmail"].ToString();
+                string toEmail = req.addInfo["ToEmail"].ToString();
+                string subject = req.addInfo["Subject"].ToString();
+                string body = req.addInfo["Body"].ToString();
+
+                string smtpServer = req.addInfo["SmtpServer"].ToString();
+                int smtpPort = int.Parse(req.addInfo["SmtpPort"].ToString());
+                string smtpUser = req.addInfo["SmtpUser"].ToString();
+                string smtpPass = req.addInfo["SmtpPass"].ToString();
+
+                var mail = new MailMessage();
+                mail.From = new MailAddress(fromEmail);
+                mail.To.Add(toEmail);
+                mail.Subject = subject;
+                mail.Body = body;
+                mail.IsBodyHtml = true;
+
+                using (var smtp = new SmtpClient(smtpServer, smtpPort))
+                {
+                    smtp.Credentials = new NetworkCredential(smtpUser, smtpPass);
+                    smtp.EnableSsl = true;
+
+                    await smtp.SendMailAsync(mail);
+                }
+
+                resData.rData["rCode"] = 0;
+                resData.rData["rMessage"] = "Email sent successfully";
+            }
+            catch (Exception ex)
+            {
+                resData.rStatus = 402;
+                resData.rData["rCode"] = 1;
+                resData.rData["rMessage"] = $"Error: {ex.Message}";
+            }
+            return resData;
+        }
+
+
         public async Task<responseData> ForgetpasswordByMail(requestData req)
         {
             responseData resData = new responseData();
@@ -254,6 +300,10 @@ namespace MyCommonStructure.Services
         {
             string pattern = @"^[0-9]{7,15}$";
             return Regex.IsMatch(phoneNumber, pattern);
+        }
+        public static void Main(string[] args)
+        {
+            // SendEmail();
         }
     }
 

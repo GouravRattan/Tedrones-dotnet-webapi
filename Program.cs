@@ -53,6 +53,7 @@ ConfigureServices(s =>
             if (rData.eventID == "1002") await http.Response.WriteAsJsonAsync(await register.GetUserByEmail(rData)); // get users details via email
         });
 
+
         var login = e.ServiceProvider.GetRequiredService<login>();
         e.MapPost("/login",
         [AllowAnonymous] async (HttpContext http) =>
@@ -79,7 +80,8 @@ ConfigureServices(s =>
             if (rData.eventID == "1001") await http.Response.WriteAsJsonAsync(await resetPassword.SendOtpToPhone(rData)); // reset Password
             if (rData.eventID == "1002") await http.Response.WriteAsJsonAsync(await resetPassword.VerifyPhoneOtp(rData)); // reset Password
             if (rData.eventID == "1003") await http.Response.WriteAsJsonAsync(await resetPassword.ResetPasswordByPhone(rData)); // reset Password
-            if (rData.eventID == "1004") await http.Response.WriteAsJsonAsync(await resetPassword.ForgetpasswordByMail(rData)); // reset Password
+            if (rData.eventID == "1004") await http.Response.WriteAsJsonAsync(await resetPassword.SendEmailToUser(rData)); // reset Password
+            if (rData.eventID == "1005") await http.Response.WriteAsJsonAsync(await resetPassword.ForgetpasswordByMail(rData)); // reset Password
         });
 
         var editProfile = e.ServiceProvider.GetRequiredService<editProfile>();
