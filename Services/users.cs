@@ -89,15 +89,15 @@ namespace MyCommonStructure.Services
             resData.rData["rMessage"] = "User details found successfully";
             try
             {
-                string UserId = req.addInfo["UserId"].ToString();
+                // string UserId = req.addInfo["UserId"].ToString();
                 string Email = req.addInfo["Email"].ToString();
                 MySqlParameter[] myParams = new MySqlParameter[]
                 {
-                    new MySqlParameter("@UserId", UserId),
+                    // new MySqlParameter("@UserId", UserId),
                     new MySqlParameter("@Email", Email),
                 };
 
-                var getusersql = $"SELECT * FROM pc_student.TEDrones_Users WHERE UserId=@UserId OR Email=@Email;";
+                var getusersql = $"SELECT * FROM pc_student.TEDrones_Users WHERE Email=@Email;";
                 var data = ds.ExecuteSQLName(getusersql, myParams);
                 if (data == null || data[0].Count() == 0)
                 {
