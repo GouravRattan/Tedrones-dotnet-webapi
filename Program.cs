@@ -16,8 +16,8 @@ ConfigureServices(s =>
     s.AddSingleton<deleteProfile>();
     s.AddSingleton<contactUs>();
     s.AddSingleton<drones>();
-    s.AddSingleton<carts>();
-    s.AddSingleton<cartItems>();
+    // s.AddSingleton<carts>();
+    // s.AddSingleton<cartItems>();
     s.AddSingleton<users>();
 
     s.AddCors();
@@ -123,29 +123,29 @@ ConfigureServices(s =>
             if (rData.eventID == "1005") await http.Response.WriteAsJsonAsync(await drones.GetAllDrones(rData));
         });
 
-        var carts = e.ServiceProvider.GetRequiredService<carts>();
-        e.MapPost("/carts", [AllowAnonymous] async (HttpContext http) => // for carts details
-        {
-            var body = await new StreamReader(http.Request.Body).ReadToEndAsync();
-            requestData rData = JsonSerializer.Deserialize<requestData>(body);
-            if (rData.eventID == "1001") await http.Response.WriteAsJsonAsync(await carts.AddToCart(rData));
-            if (rData.eventID == "1002") await http.Response.WriteAsJsonAsync(await carts.UpdateInCart(rData));
-            if (rData.eventID == "1003") await http.Response.WriteAsJsonAsync(await carts.RemoveFromCart(rData));
-            if (rData.eventID == "1004") await http.Response.WriteAsJsonAsync(await carts.GetACartItem(rData));
-            if (rData.eventID == "1005") await http.Response.WriteAsJsonAsync(await carts.GetAllCartItems(rData));
-        });
+        // var carts = e.ServiceProvider.GetRequiredService<carts>();
+        // e.MapPost("/carts", [AllowAnonymous] async (HttpContext http) => // for carts details
+        // {
+        //     var body = await new StreamReader(http.Request.Body).ReadToEndAsync();
+        //     requestData rData = JsonSerializer.Deserialize<requestData>(body);
+        //     if (rData.eventID == "1001") await http.Response.WriteAsJsonAsync(await carts.AddToCart(rData));
+        //     if (rData.eventID == "1002") await http.Response.WriteAsJsonAsync(await carts.UpdateInCart(rData));
+        //     if (rData.eventID == "1003") await http.Response.WriteAsJsonAsync(await carts.RemoveFromCart(rData));
+        //     if (rData.eventID == "1004") await http.Response.WriteAsJsonAsync(await carts.GetACartItem(rData));
+        //     if (rData.eventID == "1005") await http.Response.WriteAsJsonAsync(await carts.GetAllCartItems(rData));
+        // });
 
-        var cartItems = e.ServiceProvider.GetRequiredService<cartItems>();
-        e.MapPost("/cartItems", [AllowAnonymous] async (HttpContext http) => // for cart item details
-        {
-            var body = await new StreamReader(http.Request.Body).ReadToEndAsync();
-            requestData rData = JsonSerializer.Deserialize<requestData>(body);
-            if (rData.eventID == "1001") await http.Response.WriteAsJsonAsync(await cartItems.AddToCart(rData));
-            if (rData.eventID == "1002") await http.Response.WriteAsJsonAsync(await cartItems.UpdateInCart(rData));
-            if (rData.eventID == "1003") await http.Response.WriteAsJsonAsync(await cartItems.RemoveFromCart(rData));
-            if (rData.eventID == "1004") await http.Response.WriteAsJsonAsync(await cartItems.GetACartItem(rData));
-            if (rData.eventID == "1005") await http.Response.WriteAsJsonAsync(await cartItems.GetAllCartItems(rData));
-        });
+        // var cartItems = e.ServiceProvider.GetRequiredService<cartItems>();
+        // e.MapPost("/cartItems", [AllowAnonymous] async (HttpContext http) => // for cart item details
+        // {
+        //     var body = await new StreamReader(http.Request.Body).ReadToEndAsync();
+        //     requestData rData = JsonSerializer.Deserialize<requestData>(body);
+        //     if (rData.eventID == "1001") await http.Response.WriteAsJsonAsync(await cartItems.AddToCart(rData));
+        //     if (rData.eventID == "1002") await http.Response.WriteAsJsonAsync(await cartItems.UpdateInCart(rData));
+        //     if (rData.eventID == "1003") await http.Response.WriteAsJsonAsync(await cartItems.RemoveFromCart(rData));
+        //     if (rData.eventID == "1004") await http.Response.WriteAsJsonAsync(await cartItems.GetACartItem(rData));
+        //     if (rData.eventID == "1005") await http.Response.WriteAsJsonAsync(await cartItems.GetAllCartItems(rData));
+        // });
 
         var users = e.ServiceProvider.GetRequiredService<users>();
         e.MapPost("/users", [AllowAnonymous] async (HttpContext http) => // for user details

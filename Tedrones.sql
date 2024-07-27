@@ -14,7 +14,7 @@ INSERT INTO pc_student.TEDrones_Drones (Name, Description, Price, ImageUrl) VALU
 ('DJI Mavic 3 Pro', '4/3 CMOS Hasselblad Camera | Dual Tele Cameras | Cine Only Tri-Camera Apple ProRes Support | 43-Min Max Flight Time | Omnidirectional Obstacle Sensing | 15km HD Video Transmission', '200', 'path/to/p4.jpg'),
 ('DJI Mavic 3 Pro', '4/3 CMOS Hasselblad Camera | Dual Tele Cameras | Cine Only Tri-Camera Apple ProRes Support | 43-Min Max Flight Time | Omnidirectional Obstacle Sensing | 15km HD Video Transmission', '20', 'path/to/p5.jpg'),
 ('DJI Mavic 3 Pro', '4/3 CMOS Hasselblad Camera | Dual Tele Cameras | Cine Only Tri-Camera Apple ProRes Support | 43-Min Max Flight Time | Omnidirectional Obstacle Sensing | 15km HD Video Transmission', '200', 'path/to/p6.jpg');
-SELECT * FROM pc_student.TEDrones_Drones;
+SELECT * FROM pc_student.TEDrones_Drones;	
 
 CREATE TABLE IF NOT EXISTS pc_student.TEDrones_Users (
     UserId INT AUTO_INCREMENT PRIMARY KEY,
@@ -34,7 +34,7 @@ CREATE TABLE IF NOT EXISTS pc_student.TEDrones_Users (
 );
 SELECT * FROM pc_student.TEDrones_Users;
 
-CREATE TABLE IF NOT EXISTS pc_student.TEDrones_Carts (
+CREATE TABLE IF NOT EXISTS pc_student.TEDrone_Cart (
     CartId INT AUTO_INCREMENT PRIMARY KEY,
     UserId INT NOT NULL,
     DroneId INT NOT NULL,
@@ -50,7 +50,7 @@ CREATE TABLE IF NOT EXISTS pc_student.TEDrones_Carts (
     ShippingCost DECIMAL(10, 2),
     LastUpdatedDateTime DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (UserId) REFERENCES TEDrones_Users(UserId),
-    FOREIGN KEY (DroneId) REFERENCES All_Drones(DroneId)
+    FOREIGN KEY (DroneId) REFERENCES pc_student.TEDrones_Drones(DroneId)
 );
 UPDATE pc_student.TEDrones_Carts
 SET Quantity = 2,
@@ -61,10 +61,10 @@ ALTER TABLE pc_student.TEDrones_Carts MODIFY TotalPrice DECIMAL(10, 2) AS (Price
 ALTER TABLE pc_student.TEDrones_Carts ADD COLUMN DroneId INT NOT NULL AFTER UserId;
 INSERT INTO pc_student.TEDrones_Carts (UserId, Quantity, Price, TotalPrice) VALUES (1, 3, 500.00, 1500.00);
 SET @CartId = LAST_INSERT_ID();
-DROP TABLE IF EXISTS pc_student.TEDrones_Carts;
-SELECT * FROM pc_student.TEDrones_Carts;
+DROP TABLE IF EXISTS pc_student.TEDrone_Cart;
+SELECT * FROM pc_student.TEDrone_Cart;
 
-CREATE TABLE IF NOT EXISTS pc_student.TEDrones_CartItems (
+CREATE TABLE IF NOT EXISTS pc_student.TEDrone_CartItems (
     CartItemId INT AUTO_INCREMENT PRIMARY KEY,
     CartId INT NOT NULL,
     DroneId INT NOT NULL,
@@ -80,7 +80,7 @@ CREATE TABLE IF NOT EXISTS pc_student.TEDrones_CartItems (
     ShippingCost DECIMAL(10, 2),
     LastUpdatedDateTime DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (CartId) REFERENCES pc_student.TEDrones_Carts(CartId),
-    FOREIGN KEY (DroneId) REFERENCES All_Drones(DroneId)
+    FOREIGN KEY (DroneId) REFERENCES pc_student.TEDrones_Drones(DroneId)
 );
 UPDATE pc_student.TEDrones_CartItems
 SET DroneId = 4,
@@ -98,7 +98,9 @@ VALUES
 (@CartId, 1, 1, 500.00, 500.00, 'Red', 'Small',  0.00, 'Express', 5.00),
 (@CartId, 2, 1, 500.00, 500.00, 'Green', 'Medium',  0.00, 'Express', 5.00),
 (@CartId, 3, 1, 500.00, 500.00, 'Blue', 'Large', 0.00, 'Express', 10.00);
-SELECT * FROM pc_student.TEDrones_CartItems;
+SET SQL_SAFE_UPDATES = 0;
+ALTER TABLE pc_student.TEDrone_CartItems CHANGE COLUMN TotalPrice TotalPrice DECIMAL(10,2) GENERATED ALWAYS AS (Quantity * Price) STORED;
+SELECT * FROM pc_student.TEDrone_CartItems;
 
 CREATE TABLE IF NOT EXISTS pc_student.TEDrones_Contacts (
     ContactId INT AUTO_INCREMENT PRIMARY KEY,
@@ -125,4 +127,40 @@ CREATE TABLE IF NOT EXISTS pc_student.TEDrones_Sessions (
 );
 TRUNCATE TABLE pc_student.TEDrones_Sessions;
 SELECT * FROM pc_student.TEDrones_Sessions;
+
+
+TRUNCATE table pc_student.TEDrones_Drones;
+
+SET FOREIGN_KEY_CHECKS = 0;
+TRUNCATE TABLE pc_student.TEDrones_Drones;
+SET FOREIGN_KEY_CHECKS = 1;
+
+SELECT * FROM pc_student.TEDrones_Drones;
+
+SET FOREIGN_KEY_CHECKS = 0;
+TRUNCATE TABLE pc_student.TEDrones_CartItems;
+SET FOREIGN_KEY_CHECKS = 1;
+
+DROP TABLE pc_student.TEDrones_CartItems;
+
+SET FOREIGN_KEY_CHECKS = 0;
+TRUNCATE TABLE pc_student.TEDrones_Carts;
+SET FOREIGN_KEY_CHECKS = 1;
+
+DROP TABLE pc_student.TEDrones_Carts;
+
+CREATE TABLE CartItems (
+    CartItemId INT AUTO_INCREMENT PRIMARY KEY,
+    CartId INT NOT NULL,
+    DroneId INT NOT NULL,
+    Quantity INT NOT NULL,
+    Price DECIMAL(10, 2) NOT NULL,
+    TotalPrice DECIMAL(10, 2) NOT NULL,
+    FOREIGN KEY (CartId) REFERENCES Cart(CartId),
+    FOREIGN KEY (DroneId) REFERENCES Drones(DroneId)
+);
+
+ALTER TABLE pc_student.TEDrone_Cart
+ADD CONSTRAINT FK_User
+FOREIGN KEY (UserId) REFERENCES pc_student.TEDrones_Users(UserId);
 
