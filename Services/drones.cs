@@ -175,17 +175,17 @@ namespace MyCommonStructure.Services
             {
                 string DroneId = req.addInfo["DroneId"].ToString();
                 string Name = req.addInfo["Name"].ToString();
-                string Description = req.addInfo["Description"].ToString();
+                string ProductType = req.addInfo["ProductType"].ToString();
 
                 MySqlParameter[] myParams = new MySqlParameter[]
                 {
                     new MySqlParameter("@DroneId", req.addInfo["DroneId"]),
                     new MySqlParameter("@Name", req.addInfo["Name"]),
-                    new MySqlParameter("@Description", req.addInfo["Description"])
+                    new MySqlParameter("@ProductType", req.addInfo["ProductType"])
                 };
 
                 string getsql = $"SELECT * FROM pc_student.TEDrones_Drones " +
-                             "WHERE DroneId = @DroneId OR Name = @Name OR Description = @Description;";
+                             "WHERE DroneId = @DroneId OR Name = @Name OR ProductType = @ProductType;";
                 var Dronedata = ds.ExecuteSQLName(getsql, myParams);
                 if (Dronedata == null || Dronedata.Count == 0 || Dronedata[0].Count() == 0)
                 {
